@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Chat.Data;
-using Chat.Data.Entities;
-
-namespace Chat.Controllers
+﻿namespace Chat.Controllers
 {
+    using Data;
+    using Data.Entities;
+    using Helpers;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Threading.Tasks;
+
     public class MensajesController : Controller
     {
         private readonly IRepositorio repositorio;
+        private readonly IUserHelper userHelper;
 
-        public MensajesController(IRepositorio repositorio)
+        public DateTime Datetime { get; private set; }
+
+        public MensajesController(IRepositorio repositorio, IUserHelper userHelper)
         {
             this.repositorio = repositorio;
+            this.userHelper = userHelper;
         }
 
         // GET: Mensajes
@@ -56,6 +58,9 @@ namespace Chat.Controllers
         {
             if (ModelState.IsValid)
             {
+                //TODO Cambiar usuario logueado
+                mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
+                
                 this.repositorio.AddMensajes(mensajes);
                 await this.repositorio.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -72,6 +77,7 @@ namespace Chat.Controllers
             }
 
             var mensajes = this.repositorio.GetMensaje(id.Value);
+          
             if (mensajes == null)
             {
                 return NotFound();
@@ -83,10 +89,12 @@ namespace Chat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Mensajes mensajes)
         {
-           if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
+                    //TODO Cambiar usuario logueado
+                    mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
                     this.repositorio.UpdateMensajes(mensajes);
                     await this.repositorio.SaveChangesAsync();
                 }
@@ -114,8 +122,8 @@ namespace Chat.Controllers
                 return NotFound();
             }
             var mensaje = this.repositorio.GetMensaje(id.Value);
-            
-                if (mensaje == null)
+
+            if (mensaje == null)
             {
                 return NotFound();
             }

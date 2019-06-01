@@ -2,9 +2,10 @@
 {
 
     using Entities;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<Usuarios>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -26,6 +27,9 @@
         public DbSet<Barrios> Barrios { get; set; }
         public DbSet<Localidades> Localidades { get; set; }
         public DbSet<Domicilios> Domicilios { get; set; }
+        public DbSet<Paises> Paises { get; set; }
+
+
 
     }
 }

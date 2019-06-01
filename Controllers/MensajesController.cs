@@ -10,32 +10,32 @@
 
     public class MensajesController : Controller
     {
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioMensajes repositorio;
         private readonly IUserHelper userHelper;
 
         public DateTime Datetime { get; private set; }
 
-        public MensajesController(IRepositorio repositorio, IUserHelper userHelper)
+        public MensajesController(IRepositorioMensajes repositorioMensajes, IUserHelper userHelper)
         {
-            this.repositorio = repositorio;
+            this.repositorio = repositorioMensajes;
             this.userHelper = userHelper;
         }
 
         // GET: Mensajes
         public IActionResult Index()
         {
-            return View(this.repositorio.GetMensajes());
+            return View(this.repositorio.GetAll());
         }
 
         // GET: Mensajes/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var mensajes = this.repositorio.GetMensaje(id.Value);
+            var mensajes = await this.repositorio.GetByIdAsync(id.Value);
             if (mensajes == null)
             {
                 return NotFound();
@@ -54,30 +54,32 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync(Mensajes mensajes)
+        public async Task<IActionResult> Create(Mensajes mensajes)
         {
             if (ModelState.IsValid)
             {
                 //TODO Cambiar usuario logueado
                 mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
-                
-                this.repositorio.AddMensajes(mensajes);
-                await this.repositorio.SaveChangesAsync();
+
+                await this.repositorio.CreateAsync(mensajes);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(mensajes);
         }
 
         // GET: Mensajes/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var mensajes = this.repositorio.GetMensaje(id.Value);
-          
+            var mensajes = await this.repositorio.GetByIdAsync(id.Value);
+
+
+
             if (mensajes == null)
             {
                 return NotFound();
@@ -95,12 +97,12 @@
                 {
                     //TODO Cambiar usuario logueado
                     mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
-                    this.repositorio.UpdateMensajes(mensajes);
-                    await this.repositorio.SaveChangesAsync();
+                    await this.repositorio.UpdateAsync(mensajes);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!this.repositorio.MensajeExists(mensajes.Id))
+                    if (!await this.repositorio.ExistsAsync(mensajes.Id))
                     {
                         return NotFound();
                     }
@@ -115,13 +117,13 @@
         }
 
         // GET: Mensajes/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var mensaje = this.repositorio.GetMensaje(id.Value);
+            var mensaje = await this.repositorio.GetByIdAsync(id.Value);
 
             if (mensaje == null)
             {
@@ -136,15 +138,14 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var mensaje = this.repositorio.GetMensaje(id);
-            this.repositorio.RemoveMensajes(mensaje);
-            await this.repositorio.SaveChangesAsync();
+            var mensaje = await this.repositorio.GetByIdAsync(id);
+            await this.repositorio.DeleteAsync(mensaje);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MensajesExists(int id)
-        {
-            return this.repositorio.MensajeExists(id);
-        }
+        //private bool MensajesExists(int id)
+        //{
+        //    return this.repositorio.MensajeExists(id);
+        //}
     }
 }

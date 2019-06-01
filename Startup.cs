@@ -30,7 +30,8 @@
            });
 
             services.AddTransient<SeedDB>();
-            services.AddScoped<IRepositorio, Repositorio>();
+            services.AddScoped<IRepositorioMensajes, RepositorioMensajes>();
+            services.AddScoped<IRepositorioPaises, RepositorioPaises>();
             services.AddScoped<IUserHelper, UserHelper>();
 
             services.AddIdentity<Usuarios, IdentityRole>(cfg =>

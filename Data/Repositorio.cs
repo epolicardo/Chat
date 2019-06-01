@@ -36,7 +36,7 @@
         {
             this.context.Mensajes.Remove(mensaje);
         }
-        public async Task<bool> SaveAllAsync()
+        public async Task<bool> SaveChangesAsync()
         {
             return await this.context.SaveChangesAsync() > 0;
         }

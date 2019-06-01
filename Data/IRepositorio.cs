@@ -11,7 +11,7 @@
         IEnumerable<Mensajes> GetMensajes();
         bool MensajeExists(int id);
         void RemoveMensajes(Mensajes mensaje);
-        Task<bool> SaveAllAsync();
+        Task<bool> SaveChangesAsync();
         void UpdateMensajes(Mensajes mensaje);
     }
 }

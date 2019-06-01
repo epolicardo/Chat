@@ -12,29 +12,28 @@ namespace Chat.Controllers
 {
     public class MensajesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IRepositorio repositorio;
 
-        public MensajesController(DataContext context)
+        public MensajesController(IRepositorio repositorio)
         {
-            _context = context;
+            this.repositorio = repositorio;
         }
 
         // GET: Mensajes
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Mensajes.ToListAsync());
+            return View(this.repositorio.GetMensajes());
         }
 
         // GET: Mensajes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var mensajes = await _context.Mensajes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var mensajes = this.repositorio.GetMensaje(id.Value);
             if (mensajes == null)
             {
                 return NotFound();
@@ -46,37 +45,33 @@ namespace Chat.Controllers
         // GET: Mensajes/Create
         public IActionResult Create()
         {
-           
+
             return View();
 
         }
 
-        // POST: Mensajes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Mensajes mensajes)
+        public async Task<IActionResult> CreateAsync(Mensajes mensajes)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(mensajes);
-                
-                await _context.SaveChangesAsync();
+                this.repositorio.AddMensajes(mensajes);
+                await this.repositorio.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(mensajes);
         }
 
         // GET: Mensajes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var mensajes = await _context.Mensajes.FindAsync(id);
+            var mensajes = this.repositorio.GetMensaje(id.Value);
             if (mensajes == null)
             {
                 return NotFound();
@@ -84,28 +79,20 @@ namespace Chat.Controllers
             return View(mensajes);
         }
 
-        // POST: Mensajes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Mensajes mensajes)
+        public async Task<IActionResult> Edit(Mensajes mensajes)
         {
-            if (id != mensajes.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+           if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(mensajes);
-                    await _context.SaveChangesAsync();
+                    this.repositorio.UpdateMensajes(mensajes);
+                    await this.repositorio.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MensajesExists(mensajes.Id))
+                    if (!this.repositorio.MensajeExists(mensajes.Id))
                     {
                         return NotFound();
                     }
@@ -120,21 +107,20 @@ namespace Chat.Controllers
         }
 
         // GET: Mensajes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var mensajes = await _context.Mensajes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (mensajes == null)
+            var mensaje = this.repositorio.GetMensaje(id.Value);
+            
+                if (mensaje == null)
             {
                 return NotFound();
             }
 
-            return View(mensajes);
+            return View(mensaje);
         }
 
         // POST: Mensajes/Delete/5
@@ -142,15 +128,15 @@ namespace Chat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var mensajes = await _context.Mensajes.FindAsync(id);
-            _context.Mensajes.Remove(mensajes);
-            await _context.SaveChangesAsync();
+            var mensaje = this.repositorio.GetMensaje(id);
+            this.repositorio.RemoveMensajes(mensaje);
+            await this.repositorio.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MensajesExists(int id)
         {
-            return _context.Mensajes.Any(e => e.Id == id);
+            return this.repositorio.MensajeExists(id);
         }
     }
 }

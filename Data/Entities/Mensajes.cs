@@ -9,5 +9,11 @@
         public string CuerpoMensaje { get; set; }
         public Usuarios Emisor { get; set; }
         public Salas Sala { get; set; }
+
+        public Mensajes()
+        {
+            FechaEnviado = DateTime.Now;
+        }
+
     }
 }

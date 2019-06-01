@@ -46,7 +46,9 @@ namespace Chat.Controllers
         // GET: Mensajes/Create
         public IActionResult Create()
         {
+           
             return View();
+
         }
 
         // POST: Mensajes/Create
@@ -54,11 +56,12 @@ namespace Chat.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FechaEnviado,CuerpoMensaje")] Mensajes mensajes)
+        public async Task<IActionResult> Create(Mensajes mensajes)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(mensajes);
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -86,7 +89,7 @@ namespace Chat.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FechaEnviado,CuerpoMensaje")] Mensajes mensajes)
+        public async Task<IActionResult> Edit(int id, Mensajes mensajes)
         {
             if (id != mensajes.Id)
             {

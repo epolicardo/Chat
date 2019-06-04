@@ -1,6 +1,7 @@
 ﻿namespace Chat
 {
     using Chat.Data;
+    using Database.Data;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;

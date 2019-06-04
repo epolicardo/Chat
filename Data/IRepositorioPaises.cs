@@ -1,7 +1,7 @@
 ﻿
 namespace Chat.Data
 {
-    using Chat.Data.Entities;
+    using Database.Data.Entities;
     public interface IRepositorioPaises : IRepositorioGenerico<Paises>
     {
     }

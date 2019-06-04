@@ -1,7 +1,6 @@
 ﻿namespace Chat.Helpers
 {
-
-    using Chat.Data.Entities;
+    using Database.Data.Entities;
     using Microsoft.AspNetCore.Identity;
     using System.Threading.Tasks;
 

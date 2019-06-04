@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Chat.Data;
-using Chat.Data.Entities;
-
-namespace Chat.Controllers
+﻿namespace Chat.Controllers
 {
+    using Database.Data;
+    using Database.Data.Entities;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class LocalidadesController : Controller
     {
         private readonly DataContext _context;
@@ -54,7 +51,7 @@ namespace Chat.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Localidad")] Localidades localidades)
+        public async Task<IActionResult> Create(Localidades localidades)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +83,7 @@ namespace Chat.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Localidad")] Localidades localidades)
+        public async Task<IActionResult> Edit(int id, Localidades localidades)
         {
             if (id != localidades.Id)
             {

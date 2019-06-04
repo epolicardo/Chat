@@ -1,8 +1,9 @@
 ﻿namespace Chat
 {
-    using Data;
-    using Data.Entities;
-    using Helpers;
+    using Chat.Data;
+    using Database.Data;
+    using Database.Data.Entities;
+    using Chat.Helpers;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;

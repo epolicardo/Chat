@@ -1,18 +1,19 @@
 ﻿namespace Chat.Data
 {
-    using Chat.Data.Entities;
     using Chat.Helpers;
+    using Database.Data;
+    using Database.Data.Entities;
     using Microsoft.AspNetCore.Identity;
-    using Models;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+
 
     public class SeedDB
     {
         private readonly DataContext context;
         private readonly IUserHelper userHelper;
-        
+
         private Random random;
 
         public SeedDB(DataContext context, IUserHelper userHelper)
@@ -68,7 +69,7 @@
             if (!this.context.Mensajes.Any())
             {
                 this.AddMensaje("Hola a todos desde el Seed", usuario);
-                
+
                 await this.context.SaveChangesAsync();
             }
         }

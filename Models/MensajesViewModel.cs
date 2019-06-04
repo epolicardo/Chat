@@ -1,4 +1,4 @@
-﻿using Chat.Data.Entities;
+﻿using Database.Data.Entities;
 namespace Chat.Models
 {
 

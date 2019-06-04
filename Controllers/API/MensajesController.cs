@@ -1,7 +1,6 @@
 ﻿namespace Chat.Controllers.API
 {
-    using Chat.Data;
-    using Microsoft.AspNetCore.Http;
+    using Data;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[Controller]")]

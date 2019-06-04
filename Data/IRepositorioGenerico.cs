@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿namespace Chat.Data
+{
+
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace Chat.Data
-{
     public interface IRepositorioGenerico<T> where T : class
     {
         IQueryable<T> GetAll();

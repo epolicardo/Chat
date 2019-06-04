@@ -1,8 +1,8 @@
 ﻿namespace Chat.Data
 {
-    using Chat.Data.Entities;
+    using Database.Data;
+    using Database.Data.Entities;
     using Microsoft.EntityFrameworkCore;
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
 

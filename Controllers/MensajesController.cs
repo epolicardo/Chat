@@ -1,7 +1,7 @@
 ﻿namespace Chat.Controllers
 {
     using Data;
-    using Data.Entities;
+    using Database.Data.Entities;
     using Helpers;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -98,7 +98,7 @@
                     //TODO Cambiar usuario logueado
                     mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
                     await this.repositorio.UpdateAsync(mensajes);
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -1,28 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Chat.Data;
-using Chat.Data.Entities;
-
-namespace Chat.Controllers
+﻿namespace Chat.Controllers
 {
+    using Data;
+    using Data.Entities;
+    using Helpers;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Threading.Tasks;
+
     public class MensajesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IRepositorioMensajes repositorio;
+        private readonly IUserHelper userHelper;
 
-        public MensajesController(DataContext context)
+        public DateTime Datetime { get; private set; }
+
+        public MensajesController(IRepositorioMensajes repositorioMensajes, IUserHelper userHelper)
         {
-            _context = context;
+            this.repositorio = repositorioMensajes;
+            this.userHelper = userHelper;
         }
 
         // GET: Mensajes
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Mensajes.ToListAsync());
+            return View(this.repositorio.GetAll());
         }
 
         // GET: Mensajes/Details/5
@@ -33,8 +35,7 @@ namespace Chat.Controllers
                 return NotFound();
             }
 
-            var mensajes = await _context.Mensajes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var mensajes = await this.repositorio.GetByIdAsync(id.Value);
             if (mensajes == null)
             {
                 return NotFound();
@@ -46,20 +47,22 @@ namespace Chat.Controllers
         // GET: Mensajes/Create
         public IActionResult Create()
         {
+
             return View();
+
         }
 
-        // POST: Mensajes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FechaEnviado,CuerpoMensaje")] Mensajes mensajes)
+        public async Task<IActionResult> Create(Mensajes mensajes)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(mensajes);
-                await _context.SaveChangesAsync();
+                //TODO Cambiar usuario logueado
+                mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
+
+                await this.repositorio.CreateAsync(mensajes);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(mensajes);
@@ -73,7 +76,10 @@ namespace Chat.Controllers
                 return NotFound();
             }
 
-            var mensajes = await _context.Mensajes.FindAsync(id);
+            var mensajes = await this.repositorio.GetByIdAsync(id.Value);
+
+
+
             if (mensajes == null)
             {
                 return NotFound();
@@ -81,28 +87,22 @@ namespace Chat.Controllers
             return View(mensajes);
         }
 
-        // POST: Mensajes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FechaEnviado,CuerpoMensaje")] Mensajes mensajes)
+        public async Task<IActionResult> Edit(Mensajes mensajes)
         {
-            if (id != mensajes.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(mensajes);
-                    await _context.SaveChangesAsync();
+                    //TODO Cambiar usuario logueado
+                    mensajes.Emisor = await this.userHelper.GetUsuarioByEmailAsync("emilianopolicardo@gmail.com");
+                    await this.repositorio.UpdateAsync(mensajes);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MensajesExists(mensajes.Id))
+                    if (!await this.repositorio.ExistsAsync(mensajes.Id))
                     {
                         return NotFound();
                     }
@@ -123,15 +123,14 @@ namespace Chat.Controllers
             {
                 return NotFound();
             }
+            var mensaje = await this.repositorio.GetByIdAsync(id.Value);
 
-            var mensajes = await _context.Mensajes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (mensajes == null)
+            if (mensaje == null)
             {
                 return NotFound();
             }
 
-            return View(mensajes);
+            return View(mensaje);
         }
 
         // POST: Mensajes/Delete/5
@@ -139,15 +138,14 @@ namespace Chat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var mensajes = await _context.Mensajes.FindAsync(id);
-            _context.Mensajes.Remove(mensajes);
-            await _context.SaveChangesAsync();
+            var mensaje = await this.repositorio.GetByIdAsync(id);
+            await this.repositorio.DeleteAsync(mensaje);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MensajesExists(int id)
-        {
-            return _context.Mensajes.Any(e => e.Id == id);
-        }
+        //private bool MensajesExists(int id)
+        //{
+        //    return this.repositorio.MensajeExists(id);
+        //}
     }
 }

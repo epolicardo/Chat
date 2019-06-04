@@ -1,16 +1,17 @@
 ﻿@model IEnumerable<Chat.Data.Entities.Mensajes>
 
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Mensajes";
 }
 
-<h1>Index</h1>
+<h1>Mensajes</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+
+
 <table class="table">
-    <thead>
+    @*<thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.FechaEnviado)
@@ -20,22 +21,30 @@
             </th>
             <th></th>
         </tr>
-    </thead>
+    </thead>*@
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaEnviado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CuerpoMensaje)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+            
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaEnviado)
+                
+                    @Html.DisplayFor(modelItem => item.CuerpoMensaje)
+                </td>
+                @*<td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">E</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">D</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">X</a>
+                </td>*@
+            </tr>
+        }
     </tbody>
-</table>
+</table><form class="form-inline">
+   <div class="form-group mx-sm-3 mb-2">
+        <label for="inputPassword2" class="sr-only">Mensaje</label>
+        <input type="text" class="form-control" id="inputPassword2" placeholder="Mensaje">
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Enviar</button>
+</form>
+

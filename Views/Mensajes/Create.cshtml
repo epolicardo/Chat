@@ -13,8 +13,8 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="FechaEnviado" class="control-label"></label>
-                <input asp-for="FechaEnviado" class="form-control" />
+                <label hidden asp-for="FechaEnviado" class="control-label"></label>
+                <input hidden asp-for="FechaEnviado" value="@DateTime.Now" class="form-control" />
                 <span asp-validation-for="FechaEnviado" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -22,6 +22,13 @@
                 <input asp-for="CuerpoMensaje" class="form-control" />
                 <span asp-validation-for="CuerpoMensaje" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Emisor" class="control-label"></label>
+                <input asp-for="Emisor.Email" value="Emiliano" class="form-control" />
+                <span asp-validation-for="CuerpoMensaje" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-outline-success">Back to List</a>
